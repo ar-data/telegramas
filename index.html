@@ -26,7 +26,11 @@
 				let url;
 				if (elecciones == 'paso') {
 					url = 'https://paso.resultados.gob.ar/backend-difu/scope/data/getTiff/';
+				} else if (elecciones == 'generales') {
+					// supongo cambiara despues de los resultados del balotaje
+					url = 'https://resultados.gob.ar/backend-difu/scope/data/getTiff/';
 				} else {
+					// actual disponible
 					url = 'https://resultados.gob.ar/backend-difu/scope/data/getTiff/';
 				}
 
