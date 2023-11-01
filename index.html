@@ -15,7 +15,6 @@
 		</div>
 
 	<script>
-		let myvar;
 		document.addEventListener('DOMContentLoaded', async () => {
 			try {
 				// Extract the ID from the URL Parameters
@@ -24,11 +23,11 @@
 				if (!id) throw new Error('ID parameter is missing in the URL');
 
 				const elecciones = urlParams.get('elecciones');
-				if (!id) throw new Error('ID parameter is missing in the URL');
-				if (elecciones = 'paso') {
-					const url = 'https://paso.resultados.gob.ar/backend-difu/scope/data/getTiff/';
+				let url;
+				if (elecciones == 'paso') {
+					url = 'https://paso.resultados.gob.ar/backend-difu/scope/data/getTiff/';
 				} else {
-					const url = 'https://resultados.gob.ar/backend-difu/scope/data/getTiff/';
+					url = 'https://resultados.gob.ar/backend-difu/scope/data/getTiff/';
 				}
 
 				// Fetch the JSON Data
