@@ -10,16 +10,10 @@
 	img {
 		max-width: 100%;
 	}
-	#img-container {
-		background-color: red;
-	}
 }
 @media (min-width: 600px) {
 	img {
-		width: 400px;
-	}
-	#img-container {
-		background-color: yellow;
+		width: 600px;
 	}
 }
 
