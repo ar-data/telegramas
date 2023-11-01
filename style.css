@@ -1,0 +1,25 @@
+#img-container {
+	display: flex;
+	background-color: #285050;
+	justify-content: center;
+	flex-wrap: wrap;
+	gap: 0.6em;
+}
+
+@media (max-width: 600px) {
+	img {
+		max-width: 100%;
+	}
+	#img-container {
+		background-color: red;
+	}
+}
+@media (min-width: 600px) {
+	img {
+		width: 400px;
+	}
+	#img-container {
+		background-color: yellow;
+	}
+}
+
