@@ -20,8 +20,7 @@
 			try {
 				// Extract the ID from the URL Parameters
 				const urlParams = new URLSearchParams(window.location.search);
-				//const id = urlParams.get('id');
-				const id = '0400303502X';
+				const id = urlParams.get('id');
 				if (!id) throw new Error('ID parameter is missing in the URL');
 
 				// Fetch the JSON Data
