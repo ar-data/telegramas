@@ -101,15 +101,16 @@
 
 				const jsonData = await response.json();
 
-				const mesaInfo = {
-				"Código de mesa" : jsonData.id.idAmbito.codigo,
-				"Distrito" : jsonData.fathers[5].name,
-				"Sección electoral" : jsonData.fathers[4].name,
-				"Sección" : jsonData.fathers[3].name,
-				"Municipio" : jsonData.fathers[2].name,
-				"Circuito" : jsonData.fathers[1].name,
-				"Local de comicio" : jsonData.fathers[0].name,
-				};
+				const mesaInfo = [];
+				mesaInfo["Código de mesa"] = jsonData.id.idAmbito.codigo;
+				for (let i=0; i<jsonData.fathers.length; ++i){
+					if (jsonData.fathers[i].level == 7) mesaInfo["Local de comicio"] = jsonData.fathers[i].name;
+					if (jsonData.fathers[i].level == 6) mesaInfo["Circuito"] = jsonData.fathers[i].name;
+					if (jsonData.fathers[i].level == 5) mesaInfo["Municipio"] = jsonData.fathers[i].name;
+					if (jsonData.fathers[i].level == 4) mesaInfo["Sección"] = jsonData.fathers[i].name;
+					if (jsonData.fathers[i].level == 3) mesaInfo["Sección electoral"] = jsonData.fathers[i].name;
+					if (jsonData.fathers[i].level == 2) mesaInfo["Distrito"] = jsonData.fathers[i].name;
+				}
 
 				const partidos = [];
 				for (partido of jsonData.partidos) {
