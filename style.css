@@ -109,13 +109,23 @@ body > footer {
 	margin-top: 4rem;
 	padding: 2rem 1rem 1.5rem 1rem;
 	color: var(--text-light);
-	font-size: 0.9rem;
+	font-size: 1rem;
 	text-align: center;
 	border-top: 1px solid var(--border);
 }
 
 footer > ul {
 	list-style: none;
+}
+
+#creditos {
+	font-size: 0.9rem;
+	margin-top: 4rem;
+}
+#creditos * {
+	color: var(--border);
+	list-style: none;
+	text-decoration: none;
 }
 
 /* Format headers */
