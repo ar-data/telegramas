@@ -22,7 +22,8 @@
 }
 
 /* Dark theme */
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: dark),
+(prefers-color-scheme: light) {
 	:root,
 	::backdrop {
 		color-scheme: dark;
@@ -114,8 +115,10 @@ body > footer {
 	border-top: 1px solid var(--border);
 }
 
-footer > ul {
+footer > * {
 	list-style: none;
+	margin: 0;
+	padding: 0;
 }
 
 #creditos {
@@ -124,7 +127,6 @@ footer > ul {
 }
 #creditos * {
 	color: var(--border);
-	list-style: none;
 	text-decoration: none;
 }
 
@@ -283,6 +285,19 @@ header > nav ol {
 header > nav ul li,
 header > nav ol li {
 	display: inline-block;
+}
+.inline-list {
+	display: flex;
+	flex-wrap: wrap;
+	padding: 1em;
+}
+.inline-list li {
+	flex-grow: 1;
+	width: 33%;
+}
+.inline-list a,
+.inline-list a:visited {
+	color: var(--text);
 }
 
 header > nav a,

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Fetch STATS</title>
+	<script src="UTIF.js"></script>
+	<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+	<h3 id="title">RESULTADOS - Presidente y Vicepresidente</h3>
+	<div id="mesa-info" style="overflow-x:auto;"></div>
+	<div id="mesa-votos" style="overflow-x:auto;"></div>
+	<p id="participacion"></p>
+
+	<button id="btn-telegramas" onclick="mostrarTelegramas(this)"><b>MOSTRAR TELEGRAMAS</b></button>
+	<div id="imgs"></div>
+
+	<footer>
+		<ul class="inline-list">
+			<li>
+				<a id="balotaje" href="#"><b>BALOTAJE</b></a>
+			</li>
+			<li>
+				<a id="generales" href="#"><b>GENERALES</b></a>
+			</li>
+			<li>
+				<a id="paso" href="#"><b>PASO</b></a>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<a id="inicio" href="index.html"><b>BUSCAR MESA</b></a>
+			</li>
+		</ul>
+
+		<p>Visita la página con los <a href="https://resultados.gob.ar/" target="_blank">resultados oficiales</a></p>
+		<div id="creditos">
+			<p>Creditos a mi persona <a href="https://x.com/thefreelayon" target="_blank">@thefreelayon</a> y a <a href="https://x.com/Ariel50319454" target="_blank">@Ariel50319454</a> por el codigo</p>
+		</div>
+	</footer>
+
+	<script>
+		// links paso y generales
+		document.getElementById('paso').href = `?elecciones=paso&id=${getParam('id')}`;
+		document.getElementById('generales').href = `?elecciones=generales&id=${getParam('id')}`;
+		document.getElementById('balotaje').href = `?elecciones=balotaje&id=${getParam('id')}`;
+
+		document.getElementById('title').innerText = `RESULTADOS ${getParam('elecciones').toUpperCase()} - Presidente y Vicepresidente`;
+
+		function getParam(name) {
+			const urlParams = new URLSearchParams(window.location.search);
+			const param = urlParams.get(name);
+			if (!param) throw new Error(`${name} parameter is missing in the URL`);
+			return param;
+		}
+
+		// Function to convert JSON data to HTML table
+		function convert(jsonData, container_id) {
+			// Get the container element where the table will be inserted
+			let container = document.getElementById(container_id);
+			// Create the table element
+			let table = document.createElement("table");
+			// Get the keys (column names) of the first object in the JSON data
+			let cols = Object.keys(jsonData[0]);
+			// Create the header element
+			let thead = document.createElement("thead");
+			let tr = document.createElement("tr");
+			// Loop through the column names and create header cells
+			cols.forEach((item) => {
+				let th = document.createElement("th");
+				th.innerText = item; // Set the column name as the text of the header cell
+				tr.appendChild(th); // Append the header cell to the header row
+			});
+			thead.appendChild(tr); // Append the header row to the header
+			table.append(tr) // Append the header to the table
+			// Loop through the JSON data and create table rows
+			jsonData.forEach((item) => {
+				let tr = document.createElement("tr");
+				// Get the values of the current object in the JSON data
+				let vals = Object.values(item);
+				// Loop through the values and create table cells
+				vals.forEach((elem) => {
+					let td = document.createElement("td");
+					td.innerText = elem; // Set the value as the text of the table cell
+					tr.appendChild(td); // Append the table cell to the table row
+				});
+				table.appendChild(tr); // Append the table row to the table
+			});
+			container.appendChild(table) // Append the table to the container element
+		}
+
+		document.addEventListener('DOMContentLoaded', async () => {
+			try {
+				const elecciones = getParam('elecciones');
+				let url;
+				if (elecciones == 'paso') {
+					url = 'https://paso.resultados.gob.ar/backend-difu/scope/data/getScopeData/';
+				} else if (elecciones == 'generales') {
+					url = 'https://generales.resultados.gob.ar/backend-difu/scope/data/getScopeData/';
+				} else {
+					// actual disponible
+					url = 'https://resultados.gob.ar/backend-difu/scope/data/getScopeData/';
+				}
+
+				// Fetch the JSON Data
+				const id = getParam('id');
+				const response = await fetch(`${url}${id}/1`);
+				if (!response.ok) throw new Error('Network response was not ok');
+
+				const jsonData = await response.json();
+
+				const mesaInfo = [];
+				mesaInfo["Código de mesa"] = jsonData.id.idAmbito.codigo;
+				for (let i=0; i<jsonData.fathers.length; ++i){
+					if (jsonData.fathers[i].level == 7) mesaInfo["Local de comicio"] = jsonData.fathers[i].name;
+					if (jsonData.fathers[i].level == 6) mesaInfo["Circuito"] = jsonData.fathers[i].name;
+					if (jsonData.fathers[i].level == 5) mesaInfo["Municipio"] = jsonData.fathers[i].name;
+					if (jsonData.fathers[i].level == 4) mesaInfo["Sección"] = jsonData.fathers[i].name;
+					if (jsonData.fathers[i].level == 3) mesaInfo["Sección electoral"] = jsonData.fathers[i].name;
+					if (jsonData.fathers[i].level == 2) mesaInfo["Distrito"] = jsonData.fathers[i].name;
+				}
+
+				const partidos = [];
+				for (partido of jsonData.partidos) {
+					partidos.push({
+						"Nombre" : partido.name,
+						"Votos" : partido.votos,
+						"Porcentaje" : partido.perc,
+						});
+				}
+				const general = [
+					{
+						"Normbre" : "BLANCOS",
+						"Votos" : jsonData.blancos,
+						"Porcentaje" : jsonData.percBlancos,
+					},
+					{
+						"Normbre" : "AFIRMATIVOS",
+						"Votos" : jsonData.afirmativos,
+						"Porcentaje" : jsonData.percAfirmativos,
+					},
+					{
+						"Nombre" : "VÁLIDOS",
+						"Votos" : jsonData.valid,
+						"Porcentaje" : "100",
+					},
+				];
+
+				convert([mesaInfo], "mesa-info");
+				convert([...partidos, ...general], "mesa-votos");
+
+				document.getElementById('participacion').innerText = `Participaron ${jsonData.totalVotos} de ${jsonData.census} inscritos, ${jsonData.participation}% de participación`;
+			} catch (error) {
+				console.error('There was an error!', error);
+			}
+		});
+	</script>
+
+	<script>
+		async function mostrarTelegramas(btn) {
+			try {
+				// Extract the ID from the URL Parameters
+				const elecciones = getParam('elecciones');
+				let url;
+				if (elecciones == 'paso') {
+					url = 'https://paso.resultados.gob.ar/backend-difu/scope/data/getTiff/';
+				} else if (elecciones == 'generales') {
+					url = 'https://generales.resultados.gob.ar/backend-difu/scope/data/getTiff/';
+				} else {
+					// actual disponible
+					url = 'https://resultados.gob.ar/backend-difu/scope/data/getTiff/';
+				}
+
+				// Fetch the JSON Data
+				const id = getParam('id');
+				const response = await fetch(`${url}${id}`);
+				if (!response.ok) throw new Error('Network response was not ok');
+				const jsonData = await response.json();
+				// Convert the base64 string to a Uint8Array
+				const tiffData = Uint8Array.from(atob(jsonData.encodingBinary), c => c.charCodeAt(0));
+				// Parse the TIFF data
+				const ifds = UTIF.decode(tiffData.buffer);
+				for (let i=0; i<ifds.length; ++i) {
+					UTIF.decodeImage(tiffData.buffer, ifds[i]);
+					// Convert the TIFF to a PNG and display it
+					const rgba = UTIF.toRGBA8(ifds[i]);  // Uint8Array with RGBA pixels
+					const canvas = document.createElement('canvas');
+					canvas.width = ifds[i].width;
+					canvas.height = ifds[i].height;
+					const ctx = canvas.getContext('2d');
+					const imgData = new ImageData(new Uint8ClampedArray(rgba), ifds[i].width, ifds[i].height);
+					ctx.putImageData(imgData, 0, 0);
+					// Replace the img element's src with the canvas's data URL
+					const imgElement = new Image();
+					imgElement.onload = () => {
+						btn.scrollIntoView(true);
+					};
+					imgElement.src = canvas.toDataURL('image/png');
+					document.getElementById('imgs').appendChild(imgElement);
+				}
+				// Disable button
+				btn.disabled = true;
+			} catch (error) {
+				console.error('There was an error!', error);
+			}
+		}
+	</script>
+</body>
+</html>
