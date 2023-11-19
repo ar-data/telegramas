@@ -45,9 +45,9 @@
 
 	<script>
 		// links paso y generales
-		document.getElementById('paso').href = `?elecciones=paso&id=${getParam('id')}`;
-		document.getElementById('generales').href = `?elecciones=generales&id=${getParam('id')}`;
-		document.getElementById('balotaje').href = `?elecciones=balotaje&id=${getParam('id')}`;
+		document.getElementById('paso').href = `?elecciones=paso&id=${getParam('id').toUpperCase()}`;
+		document.getElementById('generales').href = `?elecciones=generales&id=${getParam('id').toUpperCase()}`;
+		document.getElementById('balotaje').href = `?elecciones=balotaje&id=${getParam('id').toUpperCase()}`;
 
 		document.getElementById('title').innerText = `RESULTADOS ${getParam('elecciones').toUpperCase()} - Presidente y Vicepresidente`;
 
@@ -107,7 +107,7 @@
 				}
 
 				// Fetch the JSON Data
-				const id = getParam('id');
+				const id = getParam('id').toUpperCase();
 				const response = await fetch(`${url}${id}/1`);
 				if (!response.ok) throw new Error('Network response was not ok');
 
@@ -176,7 +176,7 @@
 				}
 
 				// Fetch the JSON Data
-				const id = getParam('id');
+				const id = getParam('id').toUpperCase();
 				const response = await fetch(`${url}${id}`);
 				if (!response.ok) throw new Error('Network response was not ok');
 				const jsonData = await response.json();
